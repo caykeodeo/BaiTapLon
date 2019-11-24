@@ -25,7 +25,7 @@ cursor = conn.cursor()
 cursor.execute('SELECT * FROM qlusername.dbo.account')
 # Load the cascade
 #face_cascade = cv2.CascadeClassifier('opencv/sources/data/lbpcascades/lbpcascade_frontalface_improved.xml')
-face_cascade = cv2.CascadeClassifier('opencv/sources/data/haarcascades_cuda/haarcascade_frontalface_alt.xml')
+face_cascade = cv2.CascadeClassifier('lib/haarcascade_frontalface_alt.xml')
 #face_cascade = cv2.CascadeClassifier('opencv/sources/data/haarcascades_cuda/haarcascade_frontalface_default.xml')
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 

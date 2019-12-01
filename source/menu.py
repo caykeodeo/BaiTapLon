@@ -54,7 +54,7 @@ class Menu(object):
         self.pushButton_4.setGeometry(QtCore.QRect(30, 270, 231, 51))
         self.pushButton_4.setObjectName("pushButton_4")
         self.label = QtWidgets.QLabel(Form)
-        self.label.setGeometry(QtCore.QRect(60, 10, 181, 31))
+        self.label.setGeometry(QtCore.QRect(20, 10, 261, 41))
         self.label.setObjectName("label")
 
         self.retranslateUi(Form)
@@ -71,7 +71,7 @@ class Menu(object):
         self.pushButton_2.setText(_translate("Form", "Điểm danh sinh viên"))
         self.pushButton_3.setText(_translate("Form", "Quản lý user"))
         self.pushButton_4.setText(_translate("Form", "Đăng xuất"))
-        self.label.setText(_translate("Form", "Menu chức năng chính"))
+        self.label.setText(_translate("Form", "<html><head/><body><p align=\"center\"><span style=\" font-size:11pt; font-weight:600;\">Menu chức năng chính</span></p></body></html>"))
     def logout(self):
         os.chdir(os.path.dirname(sys.argv[0]))
         

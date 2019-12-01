@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'register.ui'
 #
@@ -26,15 +26,15 @@ conn = pyodbc.connect('Driver={SQL Server};'
                       'Trusted_Connection=yes;')
 
 cursor = conn.cursor()
-face_cascade = cv2.CascadeClassifier('opencv/sources/data/haarcascades/haarcascade_frontalface_alt.xml')
-#face_cascade = cv2.CascadeClassifier('opencv/sources/data/lbpcascades/lbpcascade_frontalface_improved.xml')
-#face_cascade = cv2.CascadeClassifier('opencv/sources/data/haarcascades_cuda/haarcascade_frontalface_default.xml')
+face_cascade = cv2.CascadeClassifier('../cascades/haarcascade_frontalface_alt2.xml')
 recognizer = cv2.face.LBPHFaceRecognizer_create()
+
 current_id = 0
 label_ids = {}
 y_labels = []
 x_train = []
-cap = cv2.VideoCapture(0)
+
+
 
 class Register(QWidget):
     def setupUi(self, Dialog):
@@ -68,26 +68,29 @@ class Register(QWidget):
 
         self.retranslateUi(Dialog)
         self.buttonBox.accepted.connect(self.train)
+
         self.buttonBox.rejected.connect(Dialog.reject)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        Dialog.setWindowTitle(_translate("Dialog", "Register User"))
         self.label.setText(_translate("Dialog", "User Name"))
         self.label_2.setText(_translate("Dialog", "Password"))
     def train(self):
+        a = self.txtUserName.text()
+        cap = cv2.VideoCapture(0)
         if self.txtPassWord.text() == '':
             QtWidgets.QMessageBox.about(self, "Wanning", "Nhập username và password")
             return
-        if not os.path.exists('ima_user/'+self.txtUserName.text()):
-            os.mkdir('ima_user/'+self.txtUserName.text())
-            print("Directory " , 'ima_user/'+self.txtUserName.text() ,  " Created ")
+        if not os.path.exists('../ima_user/'+self.txtUserName.text()):
+            os.mkdir('../ima_user/'+self.txtUserName.text())
             cursor.execute('INSERT INTO qlusername.dbo.account(username,pass) values(?,?)',(self.txtUserName.text(),self.txtPassWord.text()))
             cursor.commit()
         else:    
             QtWidgets.QMessageBox.about(self, "Wanning", "Đã tồn tại user trong hệ thống")
             self.txtUserName.setText('')
+            self.txtPassWord.setText('')
             return
         dem =0
         while True:
@@ -99,9 +102,13 @@ class Register(QWidget):
                 print(dem)
                 label = self.txtUserName.text()
                 label_ids[label] = 0
+
+                
                 id_ = label_ids[label]
+
                 roi = gray[y:y+h, x:x+w]
-                cv2.imwrite("ima_user/"+label+"/"+"."+str(dem)+".jpg",gray[y:y+h,x:x+w])
+                cv2.imwrite("../ima_user/" + label + "/" + "." + str(dem) + ".jpg", gray[y:y+h,x:x+w])
+                
                 x_train.append(roi)
                 y_labels.append(id_)
                 cv2.rectangle(img, (x, y), (x+w, y+h), (255, 0, 0), 2)
@@ -110,11 +117,17 @@ class Register(QWidget):
                 break
             if dem == 100:
                 cv2.destroyAllWindows()
-                break    
-        with open("face-labels.pickle", 'wb') as f:
-            pickle.dump(label_ids, f)
+                cap.release()
+
+                self.txtUserName.setText('')
+                self.txtPassWord.setText('')
+                QtWidgets.QMessageBox.about(QWidget(), "Wanning", "Vui lòng đăng nhập lại")
+                os.chdir(os.path.dirname(sys.argv[0]))
+                
+                os.startfile('login.py')
+                sys.exit() 
         recognizer.train(x_train, np.array(y_labels))
-        recognizer.write("user_yml/"+self.txtUserName.text()+".yml")
+        recognizer.write("../user_yml/"+a+".yml")
 
 
 if __name__ == "__main__":

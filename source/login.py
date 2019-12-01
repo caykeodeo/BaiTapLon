@@ -16,6 +16,7 @@ import pickle
 from register import Register
 from menu import Menu
 import pyodbc
+import os
 conn = pyodbc.connect('Driver={SQL Server};'
                       'Server=DESKTOP-C2S1KLM;'
                       'Database=qlusername;'
@@ -24,9 +25,7 @@ conn = pyodbc.connect('Driver={SQL Server};'
 cursor = conn.cursor()
 cursor.execute('SELECT * FROM qlusername.dbo.account')
 # Load the cascade
-#face_cascade = cv2.CascadeClassifier('opencv/sources/data/lbpcascades/lbpcascade_frontalface_improved.xml')
-face_cascade = cv2.CascadeClassifier('lib/haarcascade_frontalface_alt.xml')
-#face_cascade = cv2.CascadeClassifier('opencv/sources/data/haarcascades_cuda/haarcascade_frontalface_default.xml')
+face_cascade = cv2.CascadeClassifier('../cascades/haarcascade_frontalface_alt.xml')
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 
 #labels = {"person_name": 1}
@@ -34,9 +33,6 @@ recognizer = cv2.face.LBPHFaceRecognizer_create()
 	#og_labels = pickle.load(f)
 	#labels = {v:k for k,v in og_labels.items()}
 # Open webcam
-cap = cv2.VideoCapture(0)
-cap.set(3, 480) #set width of the frame
-cap.set(4, 640) #set height of the frame
 class Ui_Frame1(QWidget):
     def openWindow1(self):
         self.openWindow = QtWidgets.QDialog()
@@ -58,6 +54,7 @@ class Ui_Frame1(QWidget):
         self.lineEdit_2 = QtWidgets.QLineEdit(Frame1)
         self.lineEdit_2.setGeometry(QtCore.QRect(110, 80, 181, 31))
         self.lineEdit_2.setObjectName("lineEdit_2")
+        self.lineEdit_2.setEchoMode(QtWidgets.QLineEdit.Password)
         self.lblUserName = QtWidgets.QLabel(Frame1)
         self.lblUserName.setGeometry(QtCore.QRect(20, 40, 71, 21))
         self.lblUserName.setObjectName("lblUserName")
@@ -81,13 +78,14 @@ class Ui_Frame1(QWidget):
         #action button
         self.btnCancel.clicked.connect(QtWidgets.qApp.quit)
         self.btnLogin.clicked.connect(self.loginbtn)
+
         self.btnFaceLogin.clicked.connect(self.detectface_videos)
         self.btnRegister.clicked.connect(self.openWindow1)
 
         QtCore.QMetaObject.connectSlotsByName(Frame1)
     def retranslateUi(self, Frame1):
         _translate = QtCore.QCoreApplication.translate
-        Frame1.setWindowTitle(_translate("Frame1", "Frame"))
+        Frame1.setWindowTitle(_translate("Frame1", "Giao diện đăng nhập"))
         self.lblUserName.setText(_translate("Frame1", "User Name"))
         self.lblPassWord.setText(_translate("Frame1", "Password"))
         self.btnFaceLogin.setText(_translate("Frame1", "Face Login"))
@@ -113,6 +111,9 @@ class Ui_Frame1(QWidget):
         if self.lineEdit.text() == '':
             QtWidgets.QMessageBox.about(self, "Wanning", "Vui lòng nhập username để thực hiện")
             return
+        cap = cv2.VideoCapture(0)
+        cap.set(3, 480) #set width of the frame
+        cap.set(4, 640) #set height of the frame
         cursor.execute('SELECT * FROM qlusername.dbo.account where username = ?',(self.lineEdit.text()))
         result = cursor.fetchall()
         if cursor.rowcount == 0 :
@@ -121,8 +122,9 @@ class Ui_Frame1(QWidget):
             self.lineEdit_2.setText('')
             return        
         labels = {0: result[0][0]}
-        recognizer.read("user_yml/"+result[0][0]+".yml")
+        recognizer.read("../user_yml/"+result[0][0]+".yml")
         font = cv2.FONT_HERSHEY_SIMPLEX
+    
         while True:
             ret, img = cap.read()
             # Load the cascade
@@ -144,18 +146,19 @@ class Ui_Frame1(QWidget):
                 cv2.rectangle(img, (x, y), (x+w, y+h), (255, 0, 0), 2)
             cv2.imshow('frames', img)
             if a == result[0][0]:
-                #cap.release()
-                #QtWidgets.QMessageBox.about(self, "Wanning", "Success")
                 self.openMenu()
                 cv2.destroyAllWindows
+                cap.release()
                 break
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 cv2.destroyWindow('frames')
+                cap.release()
                 break
         cv2.destroyAllWindows()        
 
 
 if __name__ == "__main__":
+    print(os.getcwd())
     app = QtWidgets.QApplication(sys.argv)
     Frame1 = QtWidgets.QFrame()
     ui = Ui_Frame1()

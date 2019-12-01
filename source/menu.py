@@ -8,9 +8,36 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from userGui import Ui_QuanLy
+from diemdanh import Ui_frmDiemDanh
+from train import Train
+import sys
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtWidgets import QApplication, QDialog,QLabel,QWidget
+from PyQt5.QtGui import QIcon, QPixmap,QImage
+from PyQt5.uic import loadUi
+import cv2
+import pickle
+import os
 
 class Menu(object):
+    def openTrain(self):
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Train(QtGui.QStandardItemModel(),QtGui.QStandardItemModel())
+        self.ui.setupUi(self.window)
+        self.ui.load_table()
+        self.window.show()
+    def openDiemDanh(self):
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_frmDiemDanh()
+        self.ui.setupUi(self.window)
+        self.window.show()
+    def openQuanLy(self):
+        self.window = QtWidgets.QWidget()
+        self.ui = Ui_QuanLy()
+        self.ui.setupUi(self.window)
+        self.window.show()    
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(300, 387)
@@ -32,16 +59,24 @@ class Menu(object):
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
-
+        #action button
+        self.pushButton.clicked.connect(self.openTrain)
+        self.pushButton_2.clicked.connect(self.openDiemDanh)
+        self.pushButton_3.clicked.connect(self.openQuanLy)
+        self.pushButton_4.clicked.connect(self.logout)
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
-        self.pushButton.setText(_translate("Form", "PushButton"))
-        self.pushButton_2.setText(_translate("Form", "PushButton"))
-        self.pushButton_3.setText(_translate("Form", "PushButton"))
-        self.pushButton_4.setText(_translate("Form", "Quản lý user"))
+        Form.setWindowTitle(_translate("Form", "Menu"))
+        self.pushButton.setText(_translate("Form", "Đăng ký danh sách sinh viên"))
+        self.pushButton_2.setText(_translate("Form", "Điểm danh sinh viên"))
+        self.pushButton_3.setText(_translate("Form", "Quản lý user"))
+        self.pushButton_4.setText(_translate("Form", "Đăng xuất"))
         self.label.setText(_translate("Form", "Menu chức năng chính"))
-
+    def logout(self):
+        os.chdir(os.path.dirname(sys.argv[0]))
+        
+        os.startfile('login.py')
+        sys.exit()
 
 if __name__ == "__main__":
     import sys

@@ -210,24 +210,22 @@ class Ui_frmDiemDanh(object):
 
                 gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
 
-                faces = self.face_cascade.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=5)
+                faces = self.face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=4)
 
                 for (x,y,w,h) in faces:
                     cv2.rectangle(self.image, (x,y), (x+w,y+h), (255,0,0),2)
                     roi_gray = gray[y:y+h, x:x+w]
                     id_, conf = self.recognizer.predict(roi_gray)
-
-                    print("conf: ", conf)
                     if conf > 80 and conf < 95:
                     #dsCoMat.append(str(id_))
-                        print("id:", id_)
-                        # nếu có mặt thì bỏ flag k đi (k = vắng)
-                        next((item for item in self.studentsList if item['mssv'] == str(id_)), None)['flag'] = ''
+						print("id:", id_)
+						# nếu có mặt thì bỏ flag k đi (k = vắng)
+						next((item for item in self.studentsList if item['mssv'] == str(id_)), None)['flag'] = ''
 
-                        font = cv2.FONT_HERSHEY_COMPLEX
-                        color = (230, 0, 38)
-                        stroke = 2 # độ dày
-                        cv2.putText(self.image, str(id_), (x, y), font, 1, color,stroke, cv2.LINE_AA)
+						font = cv2.FONT_HERSHEY_COMPLEX
+						color = (230, 0, 38)
+						stroke = 2 # độ dày
+						cv2.putText(self.image, str(id_), (x, y), font, 1, color,stroke, cv2.LINE_AA)
                 cv2.imwrite('../output_image/output.jpg',self.image)
                 self.displayPicture(self.image)
 

@@ -295,8 +295,6 @@ class Train(object):
         list_class = cursor.execute('SELECT * FROM classes')
         result = cursor.fetchall()
         list_student = cursor.execute('SELECT * FROM student')
-        print(malop)
-        print(len(result)==0)
         for i in list_student:
             mssv.append(i[0])
 

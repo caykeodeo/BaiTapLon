@@ -102,6 +102,7 @@ class Ui_Frame1(QWidget):
             return
         
         if result[0][1] == self.lineEdit_2.text():
+            QtWidgets.QMessageBox.about(QWidget(), "Wanning", "Đăng nhập thành công")
             #QtWidgets.QMessageBox.about(self, "Wanning", "Thành công")
             self.openMenu()
         else:
@@ -146,9 +147,11 @@ class Ui_Frame1(QWidget):
                 cv2.rectangle(img, (x, y), (x+w, y+h), (255, 0, 0), 2)
             cv2.imshow('frames', img)
             if a == result[0][0]:
+                QtWidgets.QMessageBox.about(QWidget(), "Wanning", "Đăng nhập thành công")
                 self.openMenu()
                 cv2.destroyAllWindows
                 cap.release()
+                
                 break
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 cv2.destroyWindow('frames')

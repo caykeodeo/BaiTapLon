@@ -15,4 +15,5 @@ create table student(
 	malop nvarchar(15),
 	foreign key(malop) references [dbo].[classes](malop)
 );
-
+select * from student
+delete from student

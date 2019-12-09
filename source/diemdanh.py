@@ -210,7 +210,7 @@ class Ui_frmDiemDanh(object):
 
                 gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
 
-                faces = self.face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=4.5)
+                faces = self.face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=4)
 
                 for (x,y,w,h) in faces:
                     cv2.rectangle(self.image, (x,y), (x+w,y+h), (255,0,0),2)
